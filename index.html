@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>India GK Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --saffron: #FF6B00;
+    --saffron-light: #FF8C38;
+    --gold: #F5C842;
+    --deep: #0F0C29;
+    --navy: #1A1A3E;
+    --card: #1E1B4B;
+    --card2: #252060;
+    --green: #06B176;
+    --red: #EF4444;
+    --text: #FFFFFF;
+    --muted: #C8C4D8;
+    --border: rgba(255,255,255,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--deep);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% -10%, rgba(255,107,0,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 110%, rgba(6,177,118,0.12) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .noise {
+    position: fixed;
+    inset: 0;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23n)'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  #app { position: relative; z-index: 1; }
+
+  /* ─── HOME ─── */
+  #home {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px 60px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+
+  .ashoka {
+    font-size: 42px;
+    filter: drop-shadow(0 0 12px rgba(255,107,0,0.5));
+    animation: spin 20s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .brand-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 46px);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--saffron), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -1px;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 48px;
+  }
+
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    width: 100%;
+    max-width: 1000px;
+    margin-bottom: 40px;
+  }
+
+  .cat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px 24px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cat-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--saffron), var(--gold));
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+
+  .cat-card:hover { transform: translateY(-3px); border-color: rgba(255,107,0,0.4); }
+  .cat-card:hover::before { opacity: 0.08; }
+
+  .cat-card.selected { border-color: var(--saffron); background: rgba(255,107,0,0.12); }
+  .cat-card.selected::before { opacity: 0.12; }
+
+  .cat-icon { font-size: 28px; flex-shrink: 0; position: relative; }
+
+  .cat-info { position: relative; }
+  .cat-name { font-weight: 600; font-size: 15px; line-height: 1.3; }
+  .cat-count { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .cat-check {
+    margin-left: auto;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .cat-card.selected .cat-check {
+    background: var(--saffron);
+    border-color: var(--saffron);
+    color: #fff;
+  }
+
+  .select-all-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn {
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--saffron), #FF3C00);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(255,107,0,0.35);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,107,0,0.5); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .btn-outline {
+    background: transparent;
+    color: #FFFFFF;
+    border: 1.5px solid var(--border);
+  }
+  .btn-outline:hover { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.07); }
+
+  .btn-ghost {
+    background: rgba(255,255,255,0.08);
+    color: #FFFFFF;
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.14); }
+
+  .start-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .selected-info {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .selected-info span { color: var(--gold); font-weight: 600; }
+
+  /* ─── QUIZ ─── */
+  #quiz { display: none; min-height: 100vh; padding: 20px; }
+
+  .quiz-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding-top: 20px;
+  }
+
+  .quiz-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .quiz-meta { display: flex; flex-direction: column; gap: 4px; }
+  .quiz-cat { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; }
+  .quiz-progress-text { font-size: 13px; font-weight: 600; }
+  .quiz-progress-text span { color: var(--saffron); }
+
+  .score-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .score-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); }
+
+  .progress-bar-outer {
+    height: 4px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+
+  .progress-bar-inner {
+    height: 100%;
+    background: linear-gradient(90deg, var(--saffron), var(--gold));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  .question-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px 32px 28px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .question-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--saffron), var(--gold));
+  }
+
+  .q-number {
+    font-size: 11px;
+    color: var(--saffron);
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .q-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(17px, 2.5vw, 21px);
+    line-height: 1.5;
+    font-weight: 700;
+  }
+
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  @media (max-width: 540px) { .options-grid { grid-template-columns: 1fr; } }
+
+  .option {
+    background: #FFFFFF;
+    border: 1.5px solid rgba(0,0,0,0.1);
+    border-radius: 14px;
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+    text-align: left;
+    color: #0F0C29;
+  }
+
+  .option:hover:not(.locked) {
+    border-color: var(--saffron);
+    background: #FFF4EC;
+    transform: translateY(-1px);
+  }
+
+  .option.correct {
+    border-color: var(--green);
+    background: #DCFCE7;
+    color: #14532D;
+  }
+
+  .option.wrong {
+    border-color: var(--red);
+    background: #FEE2E2;
+    color: #7F1D1D;
+  }
+
+  .option.locked { cursor: default; }
+
+  .opt-label {
+    width: 26px; height: 26px;
+    border-radius: 8px;
+    background: rgba(15,12,41,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    letter-spacing: 0;
+    color: #0F0C29;
+  }
+
+  .option.correct .opt-label { background: var(--green); color: #fff; }
+  .option.wrong .opt-label { background: var(--red); color: #fff; }
+
+  .feedback {
+    display: none;
+    margin-top: 16px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .feedback.show { display: flex; }
+  .feedback.correct-fb { background: rgba(6,177,118,0.15); color: #FFFFFF; border: 1px solid rgba(6,177,118,0.4); }
+  .feedback.wrong-fb { background: rgba(239,68,68,0.15); color: #FFFFFF; border: 1px solid rgba(239,68,68,0.4); }
+
+  .quiz-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+  }
+
+  /* ─── RESULTS ─── */
+  #results { display: none; min-height: 100vh; padding: 40px 20px 60px; }
+
+  .results-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .result-trophy { font-size: 80px; margin-bottom: 20px; animation: bounce 1s ease infinite alternate; }
+  @keyframes bounce { to { transform: translateY(-10px); } }
+
+  .result-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 900;
+    text-align: center;
+    background: linear-gradient(135deg, var(--saffron), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+
+  .result-subtitle { color: var(--muted); font-size: 15px; margin-bottom: 36px; text-align: center; }
+
+  .score-ring-wrap {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    margin-bottom: 36px;
+  }
+
+  .score-ring-wrap svg { transform: rotate(-90deg); }
+
+  .score-ring-bg { fill: none; stroke: rgba(255,255,255,0.08); stroke-width: 12; }
+
+  .score-ring-fill {
+    fill: none;
+    stroke: url(#ringGrad);
+    stroke-width: 12;
+    stroke-linecap: round;
+    stroke-dasharray: 502;
+    stroke-dashoffset: 502;
+    transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+  }
+
+  .score-ring-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .score-pct {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .score-label { font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+
+  .stats-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .stat-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 28px;
+    text-align: center;
+    min-width: 120px;
+  }
+
+  .stat-val { font-size: 28px; font-weight: 800; font-family: 'Playfair Display', serif; }
+  .stat-val.green { color: var(--green); }
+  .stat-val.red { color: var(--red); }
+  .stat-val.gold { color: var(--gold); }
+  .stat-lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+  .result-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 48px; }
+
+  .review-section { width: 100%; }
+  .review-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .review-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+  }
+
+  .review-item.r-correct { border-left: 3px solid var(--green); }
+  .review-item.r-wrong { border-left: 3px solid var(--red); }
+
+  .review-q { font-size: 14px; font-weight: 600; margin-bottom: 8px; line-height: 1.4; color: #FFFFFF; }
+  .review-ans { font-size: 13px; color: #FFFFFF; }
+  .review-ans .r-a { font-weight: 600; }
+  .review-ans .r-a.good { color: #4ADE80; }
+  .review-ans .r-a.bad { color: #F87171; }
+
+  .review-filter {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .filter-btn {
+    padding: 7px 16px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: #FFFFFF;
+    transition: all 0.2s;
+  }
+  .filter-btn.active { background: var(--saffron); border-color: var(--saffron); color: #fff; }
+
+  .hidden { display: none !important; }
+
+  /* animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-up { animation: fadeUp 0.4s ease forwards; }
+
+  .correct-anim { animation: popIn 0.3s ease; }
+  @keyframes popIn {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+    100% { transform: scale(1); }
+  }
+</style>
+</head>
+<body>
+<div class="noise"></div>
+<div id="app">
+
+<!-- ─── HOME ─── -->
+<section id="home">
+  <div class="brand">
+    <span class="ashoka">☸</span>
+    <span class="brand-text">India GK Quiz</span>
+  </div>
+  <p class="subtitle">200 Questions · 10 Categories</p>
+
+  <div class="select-all-row">
+    <button class="btn btn-outline" onclick="selectAll()">Select All</button>
+    <button class="btn btn-ghost" onclick="clearAll()">Clear All</button>
+  </div>
+
+  <div class="categories-grid" id="catGrid"></div>
+
+  <div class="start-section">
+    <p class="selected-info" id="selectedInfo">Select categories to begin</p>
+    <button class="btn btn-primary" id="startBtn" onclick="startQuiz()" disabled>Start Quiz →</button>
+  </div>
+</section>
+
+<!-- ─── QUIZ ─── -->
+<section id="quiz">
+  <div class="quiz-inner">
+    <div class="quiz-header">
+      <div class="quiz-meta">
+        <div class="quiz-cat" id="quizCatLabel"></div>
+        <div class="quiz-progress-text">Question <span id="qNum">1</span> of <span id="qTotal">20</span></div>
+      </div>
+      <div class="score-badge">
+        <span class="dot"></span>
+        Score: <span id="liveScore">0</span>
+      </div>
+    </div>
+
+    <div class="progress-bar-outer">
+      <div class="progress-bar-inner" id="progressBar"></div>
+    </div>
+
+    <div class="question-card fade-up" id="questionCard">
+      <div class="q-number" id="qNumber"></div>
+      <div class="q-text" id="qText"></div>
+    </div>
+
+    <div class="options-grid" id="optionsGrid"></div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <div class="quiz-nav">
+      <button class="btn btn-ghost" onclick="quitQuiz()">✕ Quit</button>
+      <button class="btn btn-primary hidden" id="nextBtn" onclick="nextQuestion()">Next →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ─── RESULTS ─── -->
+<section id="results">
+  <div class="results-inner">
+    <div class="result-trophy" id="trophyEmoji">🏆</div>
+    <div class="result-title" id="resultTitle">Excellent!</div>
+    <div class="result-subtitle" id="resultSub"></div>
+
+    <div class="score-ring-wrap">
+      <svg width="180" height="180" viewBox="0 0 180 180">
+        <defs>
+          <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#FF6B00"/>
+            <stop offset="100%" stop-color="#F5C842"/>
+          </linearGradient>
+        </defs>
+        <circle class="score-ring-bg" cx="90" cy="90" r="80"/>
+        <circle class="score-ring-fill" id="scoreRing" cx="90" cy="90" r="80"/>
+      </svg>
+      <div class="score-ring-text">
+        <div class="score-pct" id="scorePct">0%</div>
+        <div class="score-label">Score</div>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-val gold" id="statTotal">0</div>
+        <div class="stat-lbl">Total</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val green" id="statCorrect">0</div>
+        <div class="stat-lbl">Correct</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val red" id="statWrong">0</div>
+        <div class="stat-lbl">Wrong</div>
+      </div>
+    </div>
+
+    <div class="result-actions">
+      <button class="btn btn-primary" onclick="retryQuiz()">↺ Retry Same</button>
+      <button class="btn btn-outline" onclick="goHome()">⌂ Home</button>
+    </div>
+
+    <div class="review-section">
+      <div class="review-title">Review Answers</div>
+      <div class="review-filter">
+        <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+        <button class="filter-btn" onclick="setFilter('wrong', this)">Wrong Only</button>
+        <button class="filter-btn" onclick="setFilter('correct', this)">Correct Only</button>
+      </div>
+      <div id="reviewList"></div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<script>
+const CATEGORIES = [
+  {
+    name: "Famous Authors (India)", icon: "📚",
+    questions: [
+      { q: "Who wrote the national anthem 'Jana Gana Mana'?", a: "Rabindranath Tagore", w: ["Bankim Chandra Chatterjee","Sarojini Naidu","Subramania Bharati"] },
+      { q: "Who is known as the 'Nightingale of India'?", a: "Sarojini Naidu", w: ["Lata Mangeshkar","Kamala Das","Amrita Pritam"] },
+      { q: "Who wrote the novel 'Godan'?", a: "Munshi Premchand", w: ["Harivansh Rai Bachchan","Phanishwarnath Renu","Mahadevi Varma"] },
+      { q: "Who wrote the novel 'The Guide'?", a: "R.K. Narayan", w: ["Mulk Raj Anand","Raja Rao","Kiran Desai"] },
+      { q: "Who wrote the novel 'The God of Small Things'?", a: "Arundhati Roy", w: ["Kiran Desai","Jhumpa Lahiri","Shashi Tharoor"] },
+      { q: "Who wrote the book 'The Discovery of India'?", a: "Jawaharlal Nehru", w: ["Mahatma Gandhi","Rajendra Prasad","Sardar Patel"] },
+      { q: "Who wrote the book 'Wings of Fire'?", a: "A.P.J. Abdul Kalam", w: ["Vikram Sarabhai","Homi Bhabha","C.V. Raman"] },
+      { q: "Who wrote the 'Ramayana'?", a: "Valmiki", w: ["Tulsidas","Ved Vyasa","Kalidasa"] },
+      { q: "Who wrote the 'Arthashastra'?", a: "Chanakya", w: ["Manu","Patanjali","Nagarjuna"] },
+      { q: "Who wrote the novel 'Midnight's Children'?", a: "Salman Rushdie", w: ["Amitav Ghosh","Vikram Seth","Rohinton Mistry"] },
+      { q: "Who wrote the novel 'Train to Pakistan'?", a: "Khushwant Singh", w: ["Bhisham Sahni","Saadat Hasan Manto","Intizar Husain"] },
+      { q: "Who created the character Rusty?", a: "Ruskin Bond", w: ["R.K. Narayan","Sudha Murthy","Vikram Seth"] },
+      { q: "Who wrote the 'Mahabharata'?", a: "Ved Vyasa", w: ["Valmiki","Tulsidas","Kalidasa"] },
+      { q: "Who wrote 'Gitanjali'?", a: "Rabindranath Tagore", w: ["Sarojini Naidu","Bankim Chandra Chatterjee","Kazi Nazrul Islam"] },
+      { q: "Who wrote the autobiography 'My Experiments with Truth'?", a: "Mahatma Gandhi", w: ["Jawaharlal Nehru","Sardar Patel","B.R. Ambedkar"] },
+      { q: "Who wrote the novel 'The White Tiger'?", a: "Aravind Adiga", w: ["Amitav Ghosh","Kiran Desai","Anurag Mathur"] },
+      { q: "Who wrote the play 'Abhijnanashakuntalam' (Shakuntala)?", a: "Kalidasa", w: ["Bhavabhuti","Bharavi","Dandin"] },
+      { q: "Who wrote the novel 'A Suitable Boy'?", a: "Vikram Seth", w: ["Amitav Ghosh","Salman Rushdie","Kiran Desai"] },
+      { q: "Who wrote the novel 'Clear Light of Day'?", a: "Anita Desai", w: ["Kamala Markandaya","Jhumpa Lahiri","Shashi Deshpande"] },
+      { q: "Who wrote the 'Panchatantra'?", a: "Vishnu Sharma", w: ["Chanakya","Kalidasa","Vatsyayana"] }
+    ]
+  },
+  {
+    name: "Famous Monuments of India", icon: "🏛️",
+    questions: [
+      { q: "In which city is the Taj Mahal located?", a: "Agra", w: ["Delhi","Lucknow","Fatehpur Sikri"] },
+      { q: "Who built the Red Fort in Delhi?", a: "Shah Jahan", w: ["Akbar","Aurangzeb","Humayun"] },
+      { q: "In which city is the Hawa Mahal located?", a: "Jaipur", w: ["Jodhpur","Udaipur","Ajmer"] },
+      { q: "The Gateway of India was built to commemorate the visit of whom?", a: "King George V", w: ["Queen Victoria","Prince Albert","King Edward VII"] },
+      { q: "In which state are the Ajanta Caves located?", a: "Maharashtra", w: ["Madhya Pradesh","Karnataka","Rajasthan"] },
+      { q: "Who built the Sanchi Stupa?", a: "Emperor Ashoka", w: ["Chandragupta Maurya","Harsha","Kanishka"] },
+      { q: "In which city is the Charminar located?", a: "Hyderabad", w: ["Bijapur","Golconda","Ahmedabad"] },
+      { q: "Which monument is known as the Black Pagoda?", a: "Konark Sun Temple", w: ["Brihadisvara Temple","Jagannath Temple","Shore Temple"] },
+      { q: "In which city is the Victoria Memorial located?", a: "Kolkata", w: ["Mumbai","Chennai","New Delhi"] },
+      { q: "Who designed the India Gate?", a: "Edwin Lutyens", w: ["Herbert Baker","John Begg","Charles Correa"] },
+      { q: "In which city is the Golden Temple located?", a: "Amritsar", w: ["Chandigarh","Ludhiana","Patiala"] },
+      { q: "Which fort is popularly known as Sonar Quila?", a: "Jaisalmer Fort", w: ["Mehrangarh Fort","Amber Fort","Chittorgarh Fort"] },
+      { q: "In which city is the Gol Gumbaz located?", a: "Vijayapura (Bijapur)", w: ["Golconda","Hyderabad","Hampi"] },
+      { q: "Who started the construction of the Qutub Minar?", a: "Qutub-ud-din Aibak", w: ["Iltutmish","Alauddin Khilji","Balban"] },
+      { q: "In which state are the Khajuraho monuments located?", a: "Madhya Pradesh", w: ["Rajasthan","Uttar Pradesh","Odisha"] },
+      { q: "In which city is the Brihadisvara Temple located?", a: "Thanjavur", w: ["Chennai","Madurai","Kanchipuram"] },
+      { q: "Who built the Charminar?", a: "Mohammed Quli Qutb Shah", w: ["Ibrahim Qutb Shah","Aurangzeb","Hyderabad Nizam"] },
+      { q: "In which city is Humayun's Tomb located?", a: "Delhi", w: ["Agra","Lahore","Fatehpur Sikri"] },
+      { q: "Where is the Shore Temple located?", a: "Mahabalipuram", w: ["Puri","Rameswaram","Kanchipuram"] },
+      { q: "In which place is the Buland Darwaza located?", a: "Fatehpur Sikri", w: ["Agra","Delhi","Lucknow"] }
+    ]
+  },
+  {
+    name: "South Indian Languages", icon: "🗣️",
+    questions: [
+      { q: "What is the official language of Andhra Pradesh?", a: "Telugu", w: ["Kannada","Tamil","Urdu"] },
+      { q: "What is the official language of Karnataka?", a: "Kannada", w: ["Telugu","Tamil","Tulu"] },
+      { q: "Which is the oldest Dravidian language?", a: "Tamil", w: ["Kannada","Telugu","Malayalam"] },
+      { q: "What is the official language of Kerala?", a: "Malayalam", w: ["Tamil","Tulu","Kodava"] },
+      { q: "What is the script used for the Malayalam language?", a: "Malayalam script", w: ["Grantha script","Vatteluttu","Brahmi"] },
+      { q: "Which language is known as the 'Italian of the East'?", a: "Telugu", w: ["Kannada","Tamil","Sanskrit"] },
+      { q: "What is the main language spoken in Lakshadweep?", a: "Malayalam", w: ["Tamil","Tulu","Konkani"] },
+      { q: "What is the language spoken in Tulu Nadu region?", a: "Tulu", w: ["Kodava","Konkani","Kannada"] },
+      { q: "'Kavirajamarga' is the earliest known literary work in which language?", a: "Kannada", w: ["Telugu","Tamil","Sanskrit"] },
+      { q: "What is the official language of Tamil Nadu?", a: "Tamil", w: ["Telugu","Kannada","Malayalam"] },
+      { q: "Which language has a script similar to Kannada?", a: "Telugu", w: ["Malayalam","Tamil","Tulu"] },
+      { q: "In which state is Kodava Takk mainly spoken?", a: "Karnataka", w: ["Kerala","Tamil Nadu","Andhra Pradesh"] },
+      { q: "Sangam literature belongs to which language?", a: "Tamil", w: ["Kannada","Telugu","Sanskrit"] },
+      { q: "The term 'Dravidian' refers to what?", a: "Language family", w: ["Ethnic group","Religious group","Cultural tradition"] },
+      { q: "What is one of the official languages of Puducherry?", a: "Tamil", w: ["French","Malayalam","Telugu"] },
+      { q: "Which was the first classical language declared in India?", a: "Tamil", w: ["Sanskrit","Kannada","Telugu"] },
+      { q: "How many major Dravidian languages are there?", a: "Four", w: ["Three","Five","Six"] },
+      { q: "The Badaga language is mainly spoken in which hills?", a: "Nilgiri Hills", w: ["Anaimalai Hills","Palani Hills","Cardamom Hills"] },
+      { q: "The Toda language is mainly spoken in which hills?", a: "Nilgiri Hills", w: ["Shevaroy Hills","Javadi Hills","Biligiriranga Hills"] },
+      { q: "Which South Indian language was the first to be granted the status of a 'Classical Language' by the Government of India?", a: "Tamil", w: ["Sanskrit","Kannada","Telugu"] }
+    ]
+  },
+  {
+    name: "Indian Awards and Honours", icon: "🏅",
+    questions: [
+      { q: "What is India's highest civilian award?", a: "Bharat Ratna", w: ["Padma Vibhushan","Padma Bhushan","Param Vir Chakra"] },
+      { q: "What is India's highest gallantry award?", a: "Param Vir Chakra", w: ["Ashok Chakra","Vir Chakra","Mahavir Chakra"] },
+      { q: "What is the highest lifetime achievement award in Indian cinema?", a: "Dadasaheb Phalke Award", w: ["National Film Award","Filmfare Lifetime Achievement","IIFA Lifetime Achievement"] },
+      { q: "What is India's highest literary award?", a: "Jnanpith Award", w: ["Sahitya Akademi Award","Vyas Samman","Saraswati Samman"] },
+      { q: "What is the highest award for sports coaches in India?", a: "Dronacharya Award", w: ["Arjuna Award","Dhyan Chand Award","Rajiv Gandhi Khel Ratna"] },
+      { q: "What is the second-highest civilian award in India?", a: "Padma Vibhushan", w: ["Padma Bhushan","Padma Shri","Bharat Ratna"] },
+      { q: "What is the award given for outstanding performance in sports?", a: "Arjuna Award", w: ["Dronacharya Award","Dhyan Chand Award","Khel Ratna"] },
+      { q: "Who was the first Indian to receive the Nobel Prize?", a: "Rabindranath Tagore", w: ["C.V. Raman","Amartya Sen","Mother Teresa"] },
+      { q: "What is the prestigious literary award given by the Sahitya Akademi?", a: "Sahitya Akademi Award", w: ["Jnanpith Award","Vyas Samman","Saraswati Samman"] },
+      { q: "Who was the first woman to receive the Bharat Ratna?", a: "Indira Gandhi", w: ["Mother Teresa","M.S. Subbulakshmi","Lata Mangeshkar"] },
+      { q: "Which international peace prize is named after Indira Gandhi?", a: "Indira Gandhi Peace Prize", w: ["Jawaharlal Nehru Award","Sarojini Naidu Award","Rajiv Gandhi Award"] },
+      { q: "What is India's highest peacetime gallantry award?", a: "Ashok Chakra", w: ["Kirti Chakra","Shaurya Chakra","Vir Chakra"] },
+      { q: "In which year was the Bharat Ratna award instituted?", a: "1954", w: ["1947","1950","1960"] },
+      { q: "What is India's highest science award?", a: "Shanti Swarup Bhatnagar Prize", w: ["CSIR Award","Infosys Science Prize","GD Birla Award"] },
+      { q: "The Kalinga Prize is given for popularization of what?", a: "Science", w: ["Literature","Peace","Mathematics"] },
+      { q: "What is the highest award given to overseas Indians?", a: "Pravasi Bharatiya Samman", w: ["Bharat Ratna","Padma Vibhushan","NRI Award"] },
+      { q: "What is the highest national award for children in India?", a: "PM Rashtriya Bal Puraskar", w: ["National Bal Shree Award","Rajiv Gandhi Award","Nehru Bal Puraskar"] },
+      { q: "Who was the first sportsperson to receive the Bharat Ratna?", a: "Sachin Tendulkar", w: ["Dhyan Chand","Milkha Singh","P.T. Usha"] },
+      { q: "Which is the highest music award given by the Madhya Pradesh government?", a: "Tansen Samman", w: ["Bhimsen Joshi Award","Lata Mangeshkar Award","Kumar Gandharva Award"] },
+      { q: "What was the earlier name of the Major Dhyan Chand Khel Ratna Award?", a: "Rajiv Gandhi Khel Ratna", w: ["Arjuna Award","Dhyan Chand Award","Nehru Khel Ratna"] }
+    ]
+  },
+  {
+    name: "Famous Indian Sports Personalities", icon: "⚽",
+    questions: [
+      { q: "Who is known as the 'Flying Sikh'?", a: "Milkha Singh", w: ["Gurbachan Singh Randhawa","Ajmer Singh","Paramjit Singh"] },
+      { q: "Who is known as 'The Wall' in Indian cricket?", a: "Rahul Dravid", w: ["Sourav Ganguly","VVS Laxman","Anil Kumble"] },
+      { q: "Who was the first Indian woman to win an Olympic medal?", a: "Karnam Malleswari", w: ["P.T. Usha","Saina Nehwal","Mary Kom"] },
+      { q: "Which sport is P.V. Sindhu associated with?", a: "Badminton", w: ["Tennis","Table Tennis","Squash"] },
+      { q: "Who is known as the 'Wizard of Hockey'?", a: "Dhyan Chand", w: ["Balbir Singh","Roop Singh","Udham Singh"] },
+      { q: "Who was the first Indian to become a Chess Grandmaster?", a: "Viswanathan Anand", w: ["Dibyendu Barua","Pravin Thipsay","R. Praggnanandhaa"] },
+      { q: "Who was the first Indian woman to win an individual Olympic silver medal?", a: "P.V. Sindhu", w: ["Saina Nehwal","Mary Kom","Karnam Malleswari"] },
+      { q: "Which sport is Mary Kom associated with?", a: "Boxing", w: ["Wrestling","Judo","Taekwondo"] },
+      { q: "Who is the current Test captain of the Indian men's cricket team (2026)?", a: "Shubman Gill", w: ["Rohit Sharma","Virat Kohli","KL Rahul"] },
+      { q: "Which sport is Sania Mirza associated with?", a: "Tennis", w: ["Badminton","Squash","Table Tennis"] },
+      { q: "Who is known as the 'Payyoli Express'?", a: "P.T. Usha", w: ["Dutee Chand","Hima Das","Anju Bobby George"] },
+      { q: "Who won India's first individual Olympic gold medal?", a: "Abhinav Bindra", w: ["Sushil Kumar","Rajyavardhan Singh Rathore","Karnam Malleswari"] },
+      { q: "Who was the first Indian to win a Grand Slam title?", a: "Mahesh Bhupathi", w: ["Leander Paes","Sania Mirza","Rohan Bopanna"] },
+      { q: "Which sport is Mithali Raj associated with?", a: "Cricket", w: ["Hockey","Badminton","Athletics"] },
+      { q: "In which event does Neeraj Chopra compete?", a: "Javelin Throw", w: ["Shot Put","Discus Throw","Hammer Throw"] },
+      { q: "Who is known as the 'Master Blaster' in cricket?", a: "Sachin Tendulkar", w: ["Virat Kohli","Sourav Ganguly","Rohit Sharma"] },
+      { q: "Which sport is Sunil Chhetri associated with?", a: "Football", w: ["Hockey","Cricket","Kabaddi"] },
+      { q: "Who was the first Indian woman to reach the final of an Olympic athletics event?", a: "P.T. Usha", w: ["Anju Bobby George","Dutee Chand","Hima Das"] },
+      { q: "Which sport is Bajrang Punia associated with?", a: "Wrestling", w: ["Boxing","Judo","Kabaddi"] },
+      { q: "Who is the youngest Indian to become a Chess Grandmaster?", a: "R. Praggnanandhaa", w: ["Nihal Sarin","Arjun Erigaisi","D. Gukesh"] }
+    ]
+  },
+  {
+    name: "Indian Banking System", icon: "🏦",
+    questions: [
+      { q: "Which is the central bank of India?", a: "Reserve Bank of India (RBI)", w: ["State Bank of India","NABARD","SEBI"] },
+      { q: "In which year was the Reserve Bank of India established?", a: "1935", w: ["1947","1949","1921"] },
+      { q: "What is the full form of ATM?", a: "Automated Teller Machine", w: ["Automatic Transaction Machine","Automated Transfer Machine","Any Time Money"] },
+      { q: "Which is the largest public sector bank in India?", a: "State Bank of India (SBI)", w: ["Punjab National Bank","Bank of Baroda","Canara Bank"] },
+      { q: "Where is the headquarters of the RBI located?", a: "Mumbai", w: ["New Delhi","Kolkata","Chennai"] },
+      { q: "What is the full form of KYC?", a: "Know Your Customer", w: ["Keep Your Cash","Know Your Credit","Key Your Customer"] },
+      { q: "Which was the first bank established in India?", a: "Bank of Hindustan", w: ["Bank of Bengal","Imperial Bank","State Bank of India"] },
+      { q: "What is the full form of IFSC?", a: "Indian Financial System Code", w: ["Indian Fund Security Code","Integrated Financial System Code","Indian Finance Service Code"] },
+      { q: "Which institution is known as the 'Banker to the Banks'?", a: "RBI", w: ["SBI","NABARD","SIDBI"] },
+      { q: "What is the full form of NEFT?", a: "National Electronic Funds Transfer", w: ["National Electronic Finance Transfer","Net Electronic Funds Transfer","National Exchange Fund Transfer"] },
+      { q: "Which is the regulator of the securities market in India?", a: "SEBI", w: ["RBI","IRDAI","TRAI"] },
+      { q: "What is the full form of EMI?", a: "Equated Monthly Installment", w: ["Equal Monthly Income","Electronic Money Interest","Estimated Monthly Income"] },
+      { q: "What does the Repo Rate indicate?", a: "Rate at which RBI lends to commercial banks", w: ["Rate at which banks lend to customers","Rate at which RBI borrows from banks","Rate for foreign exchange"] },
+      { q: "How many digits are there in an IFSC code?", a: "11", w: ["9","12","15"] },
+      { q: "What is the full form of PAN?", a: "Permanent Account Number", w: ["Personal Account Number","Permanent Audit Number","Public Account Number"] },
+      { q: "Which institution is known as the 'Lender of Last Resort'?", a: "RBI", w: ["SBI","World Bank","IMF"] },
+      { q: "What is the full form of RTGS?", a: "Real Time Gross Settlement", w: ["Real Time Gross System","Rapid Transfer Gross Settlement","Real Transfer Gross Settlement"] },
+      { q: "What was the earlier name of the State Bank of India?", a: "Imperial Bank of India", w: ["Bank of Bengal","Bank of Hindustan","Central Bank of India"] },
+      { q: "What does FD stand for in banking?", a: "Fixed Deposit", w: ["Flexible Deposit","Final Deposit","Fund Deposit"] },
+      { q: "What is the full form of UPI?", a: "Unified Payments Interface", w: ["Universal Payments Interface","United Payments Interface","Unified Payment Integration"] }
+    ]
+  },
+  {
+    name: "Tech India (Science & Technology)", icon: "🚀",
+    questions: [
+      { q: "What was India's first satellite?", a: "Aryabhata", w: ["Rohini","INSAT-1A","Chandrayaan"] },
+      { q: "Where is the headquarters of ISRO located?", a: "Bengaluru", w: ["New Delhi","Hyderabad","Mumbai"] },
+      { q: "Who is known as the Father of the Indian Space Programme?", a: "Vikram Sarabhai", w: ["Homi Bhabha","A.P.J. Abdul Kalam","Satish Dhawan"] },
+      { q: "What is India's first nuclear submarine?", a: "INS Arihant", w: ["INS Chakra","INS Vikrant","INS Sindhurakshak"] },
+      { q: "What is the full form of ISRO?", a: "Indian Space Research Organisation", w: ["Indian Scientific Research Organisation","Institute of Space Research Operations","Indian Space Research Office"] },
+      { q: "What was India's first lunar mission?", a: "Chandrayaan-1", w: ["Chandrayaan-2","Mangalyaan","Gaganyaan"] },
+      { q: "Who is known as the 'Missile Man of India'?", a: "A.P.J. Abdul Kalam", w: ["Vikram Sarabhai","R. Chidambaram","K. Santhanam"] },
+      { q: "What was India's Mars Orbiter Mission called?", a: "Mangalyaan", w: ["Chandrayaan-3","Aditya-L1","Shukrayaan"] },
+      { q: "Where is India's main satellite launch centre located?", a: "Sriharikota", w: ["Thumba","Bengaluru","Chandipur"] },
+      { q: "Which city is known as the 'Silicon Valley of India'?", a: "Bengaluru", w: ["Hyderabad","Pune","Chennai"] },
+      { q: "What is the name of India's indigenous supercomputer series?", a: "PARAM", w: ["SAGA","ANUPAM","PRATYUSH"] },
+      { q: "What is the full form of DRDO?", a: "Defence Research and Development Organisation", w: ["Defence Research and Design Organisation","Department of Research and Development Operations","Defence Research and Development Office"] },
+      { q: "In which year was ISRO formed?", a: "1969", w: ["1962","1972","1975"] },
+      { q: "Who was the first Indian to go into space?", a: "Rakesh Sharma", w: ["Sunita Williams","Kalpana Chawla","Ravish Malhotra"] },
+      { q: "What is the name of India's human spaceflight programme?", a: "Gaganyaan", w: ["Chandrayaan","Mangalyaan","Antariksh"] },
+      { q: "What is India's regional navigation satellite system called?", a: "NavIC", w: ["GAGAN","GLONASS","IRNSS"] },
+      { q: "Where is the Bhabha Atomic Research Centre (BARC) located?", a: "Mumbai", w: ["Bengaluru","Chennai","Hyderabad"] },
+      { q: "Which metal was first extracted in ancient India?", a: "Zinc", w: ["Iron","Copper","Gold"] },
+      { q: "What is the full form of IT?", a: "Information Technology", w: ["Integrated Technology","Internet Technology","Intelligent Technology"] },
+      { q: "Who is the current Chairman of ISRO (2026)?", a: "V. Narayanan", w: ["S. Somnath","K. Sivan","Madhavan Nair"] }
+    ]
+  },
+  {
+    name: "Important National Institutions", icon: "🏛️",
+    questions: [
+      { q: "Where is the Indian Parliament located?", a: "New Delhi", w: ["Mumbai","Kolkata","Chennai"] },
+      { q: "What is the full form of NITI Aayog?", a: "National Institution for Transforming India", w: ["National Institute for Targeting India","New India Think Institution","National Innovation and Technology Institute"] },
+      { q: "Where is the Supreme Court of India located?", a: "New Delhi", w: ["Mumbai","Kolkata","Chennai"] },
+      { q: "Which body conducts elections in India?", a: "Election Commission of India", w: ["UPSC","Parliament","President's Office"] },
+      { q: "Where is the National Library of India located?", a: "Kolkata", w: ["New Delhi","Mumbai","Chennai"] },
+      { q: "What is the full form of NCERT?", a: "National Council of Educational Research and Training", w: ["National Centre for Educational Research and Technology","National Council of Education Reform and Training","National Committee for Educational Research"] },
+      { q: "Which is the apex body for agricultural research in India?", a: "ICAR", w: ["NABARD","IARI","CSIR"] },
+      { q: "Where is the Sardar Vallabhbhai Patel National Police Academy located?", a: "Hyderabad", w: ["New Delhi","Dehradun","Mumbai"] },
+      { q: "What is the full form of UPSC?", a: "Union Public Service Commission", w: ["United Public Service Committee","Universal Public Service Commission","Unified Public Service Council"] },
+      { q: "Who is the authority responsible for conducting the Census in India?", a: "Registrar General of India", w: ["UPSC","Election Commission","Planning Commission"] },
+      { q: "Where is the Forest Research Institute (FRI) located?", a: "Dehradun", w: ["Bengaluru","Shimla","Nainital"] },
+      { q: "Which is the telecom regulatory authority in India?", a: "TRAI", w: ["SEBI","IRDAI","RBI"] },
+      { q: "Where is the Indian Institute of Science (IISc) located?", a: "Bengaluru", w: ["New Delhi","Mumbai","Chennai"] },
+      { q: "What is the full form of AIIMS?", a: "All India Institute of Medical Sciences", w: ["All India Institute of Medical Studies","Advanced India Institute of Medical Sciences","All India Institute of Medical Services"] },
+      { q: "Where is the headquarters of the Indian Army located?", a: "New Delhi", w: ["Pune","Lucknow","Chandigarh"] },
+      { q: "Which is the national human rights commission in India?", a: "NHRC", w: ["NCHR","NCHRC","NHCR"] },
+      { q: "Where is the Lal Bahadur Shastri National Academy of Administration (LBSNAA) located?", a: "Mussoorie", w: ["Dehradun","Shimla","Nainital"] },
+      { q: "What is the full form of CBI?", a: "Central Bureau of Investigation", w: ["Central Bureau of Intelligence","Criminal Bureau of Investigation","Central Board of Investigation"] },
+      { q: "Who is the constitutional authority for auditing government accounts?", a: "CAG", w: ["RBI","Finance Ministry","UPSC"] },
+      { q: "Where is the National Defence Academy (NDA) located?", a: "Khadakwasla", w: ["Pune","Dehradun","Hyderabad"] }
+    ]
+  },
+  {
+    name: "Cultural Diversity of India", icon: "🎭",
+    questions: [
+      { q: "Kathakali is a classical dance form of which state?", a: "Kerala", w: ["Tamil Nadu","Karnataka","Andhra Pradesh"] },
+      { q: "Bihu is a folk dance and festival of which state?", a: "Assam", w: ["West Bengal","Manipur","Meghalaya"] },
+      { q: "Which festival is known as the 'Festival of Colours'?", a: "Holi", w: ["Diwali","Basant Panchami","Rangpanchami"] },
+      { q: "Garba is a traditional dance form of which state?", a: "Gujarat", w: ["Rajasthan","Maharashtra","Punjab"] },
+      { q: "Which religion considers Guru Granth Sahib as its holy scripture?", a: "Sikhism", w: ["Hinduism","Buddhism","Jainism"] },
+      { q: "In which state is the Pongal festival mainly celebrated?", a: "Tamil Nadu", w: ["Kerala","Karnataka","Andhra Pradesh"] },
+      { q: "What is the traditional dress of Kerala women?", a: "Mundum Neriyathum", w: ["Kasavu Saree","Pattu Pavadai","Settu Mundu"] },
+      { q: "Which city is known as the 'Spiritual Capital of India'?", a: "Varanasi", w: ["Haridwar","Rishikesh","Prayagraj"] },
+      { q: "Madhubani art is a traditional folk art of which state?", a: "Bihar", w: ["Rajasthan","Odisha","West Bengal"] },
+      { q: "In which state is the Onam festival celebrated?", a: "Kerala", w: ["Tamil Nadu","Karnataka","Andhra Pradesh"] },
+      { q: "Which state is known as 'God's Own Country'?", a: "Kerala", w: ["Himachal Pradesh","Uttarakhand","Goa"] },
+      { q: "Lavani is a traditional folk dance and music form of which state?", a: "Maharashtra", w: ["Gujarat","Rajasthan","Karnataka"] },
+      { q: "Hornbill Festival is celebrated in which state?", a: "Nagaland", w: ["Manipur","Mizoram","Meghalaya"] },
+      { q: "What is one of the official languages of Jammu and Kashmir?", a: "Kashmiri", w: ["Urdu","Dogri","Hindi"] },
+      { q: "In which city is the Durga Puja celebrated on a grand scale?", a: "Kolkata", w: ["Mumbai","Delhi","Varanasi"] },
+      { q: "Kuchipudi is a classical dance form of which state?", a: "Andhra Pradesh", w: ["Tamil Nadu","Karnataka","Telangana"] },
+      { q: "Ganesh Chaturthi is celebrated with great fervour in which state?", a: "Maharashtra", w: ["Karnataka","Goa","Gujarat"] },
+      { q: "Pashmina shawls are traditionally associated with which region?", a: "Kashmir", w: ["Himachal Pradesh","Uttarakhand","Rajasthan"] },
+      { q: "What is the national fruit of India?", a: "Mango", w: ["Banana","Guava","Jackfruit"] },
+      { q: "Yakshagana is a traditional theatre form of which state?", a: "Karnataka", w: ["Kerala","Andhra Pradesh","Tamil Nadu"] }
+    ]
+  },
+  {
+    name: "Current Affairs (India-focused)", icon: "📰",
+    questions: [
+      { q: "Who is the current President of India?", a: "Droupadi Murmu", w: ["Ram Nath Kovind","Pratibha Patil","Pranab Mukherjee"] },
+      { q: "Who is the current Prime Minister of India?", a: "Narendra Modi", w: ["Manmohan Singh","Amit Shah","Rajnath Singh"] },
+      { q: "Which city hosted the G20 Summit in 2023?", a: "New Delhi", w: ["Mumbai","Bengaluru","Hyderabad"] },
+      { q: "Which Indian mission achieved a soft landing near the Moon's south pole?", a: "Chandrayaan-3", w: ["Chandrayaan-1","Chandrayaan-2","Mangalyaan"] },
+      { q: "Who is the current Vice President of India?", a: "C. P. Radhakrishnan", w: ["Jagdeep Dhankhar","Venkaiah Naidu","Hamid Ansari"] },
+      { q: "What is the name of India's first solar observatory mission?", a: "Aditya-L1", w: ["Surya-1","Helios-1","Suryadrishti"] },
+      { q: "Who is the current Governor of the Reserve Bank of India?", a: "Sanjay Malhotra", w: ["Shaktikanta Das","Urjit Patel","Raghuram Rajan"] },
+      { q: "Which city has been consistently ranked as India's cleanest city?", a: "Indore", w: ["Surat","Mysuru","Chandigarh"] },
+      { q: "What is the name of India's indigenous Light Combat Aircraft?", a: "Tejas", w: ["Akash","Arjun","Agni"] },
+      { q: "Who is the current Union Education Minister of India?", a: "Dharmendra Pradhan", w: ["Ramesh Pokhriyal","Prakash Javadekar","Smriti Irani"] },
+      { q: "What is the name of the railway station redevelopment scheme?", a: "Amrit Bharat Station Scheme", w: ["Viksit Bharat Station Scheme","Smart Station Scheme","Rail Vikas Yojana"] },
+      { q: "Who won India's first-ever gold medal in javelin throw at the World Athletics Championships?", a: "Neeraj Chopra", w: ["Devendra Jhajharia","Vikas Gowda","Seema Antil"] },
+      { q: "By which year does India aim to become a developed nation (Viksit Bharat)?", a: "2047", w: ["2035","2050","2075"] },
+      { q: "Which song from the film 'RRR' won the Oscar for Best Original Song in 2023?", a: "Naatu Naatu", w: ["Jai Ho","Dola Re Dola","Nimbooda"] },
+      { q: "What was India's first interplanetary mission to Mars called?", a: "Mangalyaan", w: ["Chandrayaan-3","Aditya-L1","Astrosat"] },
+      { q: "In which city is the headquarters of ISRO located?", a: "Bengaluru", w: ["New Delhi","Hyderabad","Mumbai"] },
+      { q: "What was India's first satellite?", a: "Aryabhata", w: ["Rohini","INSAT-1A","Chandrayaan-1"] },
+      { q: "What is India's indigenous satellite navigation system?", a: "NavIC", w: ["GAGAN","GPS","IRNSS"] },
+      { q: "What is the name of India's human spaceflight programme?", a: "Gaganyaan", w: ["Antariksh Yaan","Chandrayaan","Mangalyaan"] },
+      { q: "What is the name of India's first indigenously built nuclear submarine?", a: "INS Arihant", w: ["INS Chakra","INS Sindhurakshak","INS Vikrant"] }
+    ]
+  }
+];
+
+// ─── STATE ───
+let selectedCats = new Set();
+let allQuestions = [];
+let currentIdx = 0;
+let score = 0;
+let answered = false;
+let userAnswers = [];
+let currentQuestions = [];
+
+// ─── BUILD HOME ───
+function buildHome() {
+  const grid = document.getElementById('catGrid');
+  grid.innerHTML = '';
+  CATEGORIES.forEach((cat, i) => {
+    const card = document.createElement('div');
+    card.className = 'cat-card';
+    card.dataset.idx = i;
+    card.innerHTML = `
+      <div class="cat-icon">${cat.icon}</div>
+      <div class="cat-info">
+        <div class="cat-name">${cat.name}</div>
+        <div class="cat-count">${cat.questions.length} questions</div>
+      </div>
+      <div class="cat-check">✓</div>
+    `;
+    card.addEventListener('click', () => toggleCat(i, card));
+    grid.appendChild(card);
+  });
+  updateSelectionInfo();
+}
+
+function toggleCat(idx, card) {
+  if (selectedCats.has(idx)) { selectedCats.delete(idx); card.classList.remove('selected'); }
+  else { selectedCats.add(idx); card.classList.add('selected'); }
+  updateSelectionInfo();
+}
+
+function selectAll() {
+  document.querySelectorAll('.cat-card').forEach((c, i) => {
+    c.classList.add('selected'); selectedCats.add(i);
+  });
+  updateSelectionInfo();
+}
+
+function clearAll() {
+  document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('selected'));
+  selectedCats.clear();
+  updateSelectionInfo();
+}
+
+function updateSelectionInfo() {
+  const total = [...selectedCats].reduce((s, i) => s + CATEGORIES[i].questions.length, 0);
+  const info = document.getElementById('selectedInfo');
+  const btn = document.getElementById('startBtn');
+  if (selectedCats.size === 0) { info.innerHTML = 'Select categories to begin'; btn.disabled = true; }
+  else { info.innerHTML = `<span>${selectedCats.size}</span> ${selectedCats.size===1?'category':'categories'} · <span>${total}</span> questions`; btn.disabled = false; }
+}
+
+// ─── SHUFFLE ───
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ─── START QUIZ ───
+function startQuiz() {
+  currentQuestions = [];
+  selectedCats.forEach(i => {
+    CATEGORIES[i].questions.forEach((q, qi) => {
+      currentQuestions.push({ ...q, cat: CATEGORIES[i].name, catIdx: i, qIdx: qi });
+    });
+  });
+  allQuestions = currentQuestions;
+  currentIdx = 0; score = 0; answered = false; userAnswers = [];
+  document.getElementById('home').style.display = 'none';
+  document.getElementById('quiz').style.display = 'block';
+  document.getElementById('qTotal').textContent = allQuestions.length;
+  showQuestion();
+}
+
+function showQuestion() {
+  const q = allQuestions[currentIdx];
+  answered = false;
+  document.getElementById('nextBtn').classList.add('hidden');
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('feedback').innerHTML = '';
+
+  // Update header
+  document.getElementById('quizCatLabel').textContent = q.cat;
+  document.getElementById('qNum').textContent = currentIdx + 1;
+  document.getElementById('liveScore').textContent = score;
+  document.getElementById('qNumber').textContent = `Q${currentIdx + 1} of ${allQuestions.length}`;
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('progressBar').style.width = (currentIdx / allQuestions.length * 100) + '%';
+
+  // Build options
+  const opts = shuffle([q.a, ...q.w]);
+  const grid = document.getElementById('optionsGrid');
+  grid.innerHTML = '';
+  const labels = ['A','B','C','D'];
+  opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="opt-label">${labels[i]}</span><span>${opt}</span>`;
+    btn.addEventListener('click', () => selectAnswer(opt, q.a, btn, grid));
+    grid.appendChild(btn);
+  });
+
+  // Animate
+  document.getElementById('questionCard').classList.remove('fade-up');
+  void document.getElementById('questionCard').offsetWidth;
+  document.getElementById('questionCard').classList.add('fade-up');
+}
+
+function selectAnswer(chosen, correct, btn, grid) {
+  if (answered) return;
+  answered = true;
+  const isCorrect = chosen === correct;
+  const fb = document.getElementById('feedback');
+
+  Array.from(grid.children).forEach(b => {
+    b.classList.add('locked');
+    const label = b.querySelector('span:last-child').textContent;
+    if (label === correct) b.classList.add('correct');
+    else if (b === btn && !isCorrect) b.classList.add('wrong');
+  });
+
+  if (isCorrect) {
+    score++;
+    btn.classList.add('correct-anim');
+    fb.className = 'feedback correct-fb show';
+    fb.innerHTML = '✓ &nbsp; Correct! Well done.';
+  } else {
+    fb.className = 'feedback wrong-fb show';
+    fb.innerHTML = `✗ &nbsp; Incorrect. The correct answer is: <strong>${correct}</strong>`;
+  }
+
+  document.getElementById('liveScore').textContent = score;
+  userAnswers.push({ q: allQuestions[currentIdx].q, a: correct, chosen, correct: isCorrect });
+
+  document.getElementById('nextBtn').classList.remove('hidden');
+  document.getElementById('nextBtn').textContent = currentIdx < allQuestions.length - 1 ? 'Next →' : 'See Results →';
+}
+
+function nextQuestion() {
+  currentIdx++;
+  if (currentIdx >= allQuestions.length) { showResults(); return; }
+  showQuestion();
+}
+
+function quitQuiz() {
+  if (currentIdx === 0 && !answered) { goHome(); return; }
+  showResults();
+}
+
+// ─── RESULTS ───
+function showResults() {
+  document.getElementById('quiz').style.display = 'none';
+  document.getElementById('results').style.display = 'block';
+  const total = userAnswers.length;
+  const pct = total === 0 ? 0 : Math.round((score / total) * 100);
+
+  // Trophy & title
+  let trophy = '🏆', title = 'Excellent!';
+  if (pct >= 90) { trophy = '🏆'; title = 'Outstanding!'; }
+  else if (pct >= 75) { trophy = '🥇'; title = 'Great Work!'; }
+  else if (pct >= 60) { trophy = '🥈'; title = 'Good Job!'; }
+  else if (pct >= 40) { trophy = '🥉'; title = 'Keep Practising!'; }
+  else { trophy = '📖'; title = 'Study More!'; }
+
+  document.getElementById('trophyEmoji').textContent = trophy;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultSub').textContent = `You answered ${score} out of ${total} questions correctly`;
+  document.getElementById('scorePct').textContent = pct + '%';
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statCorrect').textContent = score;
+  document.getElementById('statWrong').textContent = total - score;
+
+  // Ring animation
+  const ring = document.getElementById('scoreRing');
+  const circumference = 502;
+  const offset = circumference - (pct / 100) * circumference;
+  setTimeout(() => { ring.style.strokeDashoffset = offset; }, 100);
+
+  // Review
+  buildReview('all');
+}
+
+function buildReview(filter) {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  userAnswers.forEach((item, i) => {
+    if (filter === 'correct' && !item.correct) return;
+    if (filter === 'wrong' && item.correct) return;
+    const div = document.createElement('div');
+    div.className = `review-item ${item.correct ? 'r-correct' : 'r-wrong'}`;
+    div.innerHTML = `
+      <div class="review-q">${i+1}. ${item.q}</div>
+      <div class="review-ans">
+        ${item.correct
+          ? `<span class="r-a good">✓ ${item.a}</span>`
+          : `Your answer: <span class="r-a bad">✗ ${item.chosen}</span> &nbsp; Correct: <span class="r-a good">✓ ${item.a}</span>`
+        }
+      </div>
+    `;
+    list.appendChild(div);
+  });
+  if (list.children.length === 0) {
+    list.innerHTML = `<p style="color:var(--muted);text-align:center;padding:20px">No items in this category.</p>`;
+  }
+}
+
+function setFilter(filter, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  buildReview(filter);
+}
+
+function retryQuiz() {
+  document.getElementById('results').style.display = 'none';
+  currentIdx = 0; score = 0; answered = false; userAnswers = [];
+  document.getElementById('quiz').style.display = 'block';
+  document.getElementById('qTotal').textContent = allQuestions.length;
+  document.getElementById('scoreRing').style.strokeDashoffset = 502;
+  showQuestion();
+}
+
+function goHome() {
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('quiz').style.display = 'none';
+  document.getElementById('home').style.display = 'flex';
+  document.getElementById('scoreRing').style.strokeDashoffset = 502;
+}
+
+// ─── INIT ───
+buildHome();
+</script>
+</body>
+</html>
